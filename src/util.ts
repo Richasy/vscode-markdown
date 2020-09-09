@@ -108,7 +108,7 @@ export function showChangelog() {
  * It can also have HTML tags, e.g. `<code>`.
  * They should not be passed to the `slugify` function.
  *
- * The keys are slugify modes.
+ * The keys are modes, sometimes the same name as slugify modes.
  * The values are corresponding conversion methods, whose signature must be `(text: string) => string`.
  *
  * @param text A Markdown heading
@@ -201,6 +201,10 @@ export function slugify(heading: string, mode?: string, downcase?: boolean) {
     let slug = heading.trim();
 
     switch (mode) {
+        case 'vscode':
+            slug = mdHeadingToPlaintext.legacy(slug);
+            break;
+
         default:
             slug = mdHeadingToPlaintext.legacy(slug); // ! Change to "commonMark" once it's finished!
             break;
@@ -212,17 +216,18 @@ export function slugify(heading: string, mode?: string, downcase?: boolean) {
         slug = slug.toLowerCase()
     }
 
+    // Sort by popularity.
     switch (mode) {
         case 'github':
             slug = slugifyMethods.github(slug);
             break;
 
-        case 'gitea':
-            slug = slugifyMethods.gitea(slug);
-            break;
-
         case 'gitlab':
             slug = slugifyMethods.gitlab(slug);
+            break;
+
+        case 'gitea':
+            slug = slugifyMethods.gitea(slug);
             break;
 
         case 'vscode':
